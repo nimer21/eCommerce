@@ -1,0 +1,9 @@
+.category{
+    display: flex;
+    align-items: center;
+    gap: 40px;
+    background-color: aqua;
+}
+.category img{
+    width: 100px;
+}
