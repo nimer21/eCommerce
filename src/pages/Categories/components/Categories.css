@@ -1,9 +1,12 @@
-.category{
-    display: flex;
-    align-items: center;
-    gap: 40px;
-    background-color: aqua;
+.row{
+  display: flex;
+  flex-wrap: wrap;
+  background-color: aqua;
 }
-.category img{
-    width: 100px;
+.category-items{
+  display: flex;
+  flex-wrap: wrap;
+}
+.row img{
+  width: 50px;
 }
