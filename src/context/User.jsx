@@ -1,9 +1,12 @@
 import { createContext, useState, useEffect } from "react";
 import { jwtDecode } from "jwt-decode";
 
+
 export const UserContext=createContext();
 
+
 const UserContextProvider = ({children})=>{
+    
     //const [userName,setUserName] = useState('Nimer');
     const [userToken,setUserToken] = useState(localStorage.getItem('userToken'));
     const[userName,setUserName] = useState(null);

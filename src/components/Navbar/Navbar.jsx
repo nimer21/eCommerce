@@ -5,15 +5,29 @@ import "./Navbar.css";
 import { assets } from "../../assets/assets";
 import { useContext } from 'react';
 import { UserContext } from "../../context/User";
+import { HashLink, NavHashLink } from 'react-router-hash-link';
+import { StoreContext } from "../../context/StoreContext";
+
 
 export default function Navbar({setShowLogin}) {
+  //const [query,setQuery] = useState('');
+  //const filteredItems = getFilteredItems(query, items);
+  
+  const {getTotalCartAmount} = useContext(StoreContext);
+
+  const [menu,setMenu] =useState("home");
+  //<a href="#app-download" onClick={()=>setMenu("mobile-app")} className={menu==="mobile-app"?"active":""}>mobile-app</a>
+
+  //const {getFilteredItems} = useContext(StoreContext);
+
   const {userName, setUserName, setUserToken} = useContext(UserContext);
   const navigate = useNavigate();
   const logout = ()=>{
     localStorage.removeItem('userToken');
     setUserToken(null);
     setUserName(null);
-    navigate('/Login');
+    navigate('/');
+    //setShowLogin(true);
   };
   //console.log(useContext(UserContext));
   //const {userName} = useContext(UserContext);
@@ -21,46 +35,41 @@ export default function Navbar({setShowLogin}) {
   const [menu, setMenu] = useState("Menu");
         <li onClick={()=>setMenu("Contact")} className={menu === "Contact" ? "active" : ""}>Contact</li>
         */
+
+        const handelChange = (e)=>{
+          console.log(e.target.value);
+        }
   return (
-    <nav className="navbar navbar-expand-lg bg-body-tertiary">
-    <div className="container-fluid">
-    <img src={assets.logo} alt="" className="logo" />
-      <button className="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
-        <span className="navbar-toggler-icon" />
-      </button>
-      <div className="collapse navbar-collapse" id="navbarSupportedContent">
-      <ul className="navbar-nav me-auto mb-2 mb-lg-0">
-      <li className="nav-item"><NavLink className="nav-link" to='/'>Home</NavLink></li>
+    <div className="navbar">
+    <Link to={'/'}><img src={assets.logo} alt="" className="logo" /></Link>
+      <ul className="navbar-menu">     
         {
           userName?
           <>
-          <li className="nav-item"><NavLink className="nav-link" to='/Categories'>Categories</NavLink></li>
-          <li className="nav-item"><NavLink className="nav-link" to='/'>Welcome {userName}</NavLink></li>
-          <li className="nav-item"><button onClick={logout}>Logout</button></li>
+          <li className="nav-item"><Link smooth to='/' onClick={()=>setMenu("home")} className={menu==="home"?"active":""}>Home</Link></li>
+          <a href="/#explore-category" onClick={()=>setMenu("menu")} className={menu==="menu" ? "active" :""}>Category</a>
+          <li className="nav-item"><Link smooth to='/' onClick={()=>setMenu("welcome")} className={menu==="welcome" ? "active" :""} >Welcome {userName}</Link></li>
 
-          <div className="navbar-right">
-        <img src={assets.search_icon} alt="" />
-        <div className="navbar-search-icon">
-        <NavLink className="nav-link" to='/Cart'>
-          <img src={assets.basket_icon} alt=""/>
-          </NavLink>
-          <div className="dot"></div>
-        </div>
-      </div>
           </>
           :
           <>
-          
-          <li className="nav-item"><NavLink className="nav-link" to='/Categories'>Categories</NavLink></li>
-          <li className="nav-item"><NavLink className="nav-link" to='/Register'>Register {userName}</NavLink></li>
-           <div className="navbar-right">
-        <button onClick={()=>setShowLogin(true)}>sign in</button>
-      </div>
+          <Link to='/' onClick={()=>setMenu("home")} className={menu==="home" ? "active" :""}>Home</Link>
+      <a href="#explore-category" onClick={()=>setMenu("menu")} className={menu==="menu" ? "active" :""}>Category</a>
+      <a href="#app-download" onClick={()=>setMenu("mobile-app")} className={menu==="mobile-app" ? "active" :""}>mobile-app</a>
+      <a href="#footer" onClick={()=>setMenu("contact-us")} className={menu==="contact-us" ? "active" :""}>Contact Us</a>
           </>
         }
       </ul>
-    </div>
-    </div>
-</nav>
+      <div className="navbar-right">
+        <img src={assets.search_icon} alt="" />
+        <div className="navbar-search-icon">
+          <input type="search" placeholder="Search category" name="userName" onChange={e=>setQuery(e.target.value)} className="search-input"/>
+          <Link to='/cart'><img src={assets.basket_icon} alt="" /></Link>
+          <div className={getTotalCartAmount()===0?"":"dot"}></div>
+        </div>
+        {userName?<button onClick={logout}>Logout</button>:<button onClick={()=>setShowLogin(true)}>sign in</button>}
+      </div>
+
+</div>
   );
 }

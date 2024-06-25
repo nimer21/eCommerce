@@ -5,17 +5,25 @@ import "./Categories.css";
 import { assets } from "../../../assets/assets";
 import { NavLink, Link } from "react-router-dom";
 import Loader from "../../../components/Loader/Loader";
+import { menu_list } from "../../../assets/assets";
 
 // Import Swiper React components
-import { Swiper, SwiperSlide } from 'swiper/react';
+import { Swiper, SwiperSlide } from "swiper/react";
 
 // Import Swiper styles
-import 'swiper/css';
+import "swiper/css";
+import "swiper/css/free-mode";
+import "swiper/css/pagination";
 
-export default function Categories() {
+//import './styles.css';
+
+// import required modules
+import { FreeMode, Pagination } from "swiper/modules";
+
+export default function Categories({ categoryId, setCategory }) {
   const [categories, setCategories] = useState([]);
-  const [loader,setLoader] = useState(true);
-  const [error,setError] = useState('');
+  const [loader, setLoader] = useState(true);
+  const [error, setError] = useState("");
   const getCategories = async () => {
     try {
       const { data } = await axios.get(
@@ -24,41 +32,86 @@ export default function Categories() {
       //console.log(data);
       setCategories(data.categories);
       //setLoader(false);
-      setError('');
+      setError("");
     } catch (error) {
-      setError('Tiger: Error to Load Data  | ' +error);
-      console.log("Tiger: catch err ...= "+error);
+      setError("Tiger: Error to Load Data  | " + error);
+      //console.log("Tiger: catch err ...= "+error);
       //setLoader(false);
-    }
-    finally{
+    } finally {
       setLoader(false);
     }
   };
   useEffect(() => {
     getCategories();
-    console.log("fetched data", getCategories());
+    //console.log("fetched data", getCategories());
   }, []);
-  if(loader) {
-    return <Loader/>
-    
+  if (loader) {
+    return <Loader />;
   }
   return (
     <>
-    {error?<p>{error}</p>:null}
-    {error??<p>{error}</p>}
-      <div>Categories</div>
+      {error ? <p>{error}</p> : null}
+      {error ?? <p>{error}</p>}
 
-    <div className="row">
-
-    {(categories.length > 0)?categories.map((category) => (
-        <Link to={`/Categories/${category._id}`}>
-        <div className="category-items" key={category._id}>
-          <h4>{category.name}</h4>
-          <img className="img" src={category.image.secure_url} />
+      <div className="explore-category" id="explore-category">
+        <h1>Explore Our Category</h1>
+        <p className="explore-category-text"></p>
+        <div className="explore-category-list">
+          <Swiper
+            slidesPerView={4}
+            spaceBetween={30}
+            freeMode={true}
+            pagination={{
+              clickable: true,
+            }}
+            modules={[FreeMode, Pagination]}
+            className="mySwiper"
+          >
+            {/* {menu_list.map((item,index)=>{
+            return (
+              
+      <SwiperSlide>
+              <div onClick={()=>setCategory(prev=>prev===item.menu_name?"All":item.menu_name)} key={index} className="explore-category-list-item">
+     
+                <img className={category===item.menu_name?"active" :""} src={item.menu_image} alt="" />
+        
+              </div>
+      </SwiperSlide>
+              
+            )
+          })}*/}
+            {categories.length > 0 ? (
+              categories.map((item, index) => {
+                return (
+                  <SwiperSlide>
+                   {/*<Link to={`/Categories/${item._id}`}>*/} 
+                    <div
+                      onClick={() =>
+                        setCategory((prev) =>
+                          prev === item._id ? "All" : item._id
+                        )
+                      }
+                      key={index}
+                      className="explore-category-list-item"
+                    >
+                      <img
+                        className={categoryId === item._id ? "active" : ""}
+                        src={item.image.secure_url}
+                        alt=""
+                      />
+                    </div>
+                     {/*</Link>*/} 
+                    
+                  </SwiperSlide>
+                );
+              })
+            ) : (
+              <h2>Empty Category</h2>
+            )}
+          </Swiper>
         </div>
-        </Link>
-  )): <h2>Empty Category</h2>}
-    </div>
+        <hr />
+      </div>
     </>
   );
 }

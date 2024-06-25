@@ -1,0 +1,10 @@
+
+.conatiner{
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+    align-items: center;
+}
+.card{
+    background-color: brown;
+}
